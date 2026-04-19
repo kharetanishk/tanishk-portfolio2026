@@ -1,0 +1,32 @@
+FROM node:20-alpine
+
+RUN npm install -g pnpm
+
+WORKDIR /app
+
+# Copy monorepo root workspace config
+COPY pnpm-workspace.yaml ./
+COPY package.json ./
+COPY turbo.json ./
+
+# Copy all package manifests first (for layer caching)
+COPY packages/database/package.json ./packages/database/package.json
+COPY packages/typescript-config/package.json ./packages/typescript-config/package.json
+COPY apps/api/package.json ./apps/api/package.json
+
+# Install all workspace deps from root
+RUN pnpm install
+
+# Copy source
+COPY packages/database ./packages/database
+COPY packages/typescript-config ./packages/typescript-config
+COPY apps/api ./apps/api
+
+# Generate Prisma client
+RUN cd packages/database && pnpm db:generate
+
+WORKDIR /app/apps/api
+
+EXPOSE 4000
+
+CMD ["pnpm", "dev"]

@@ -1,0 +1,482 @@
+================================================================================
+                          TANISHK KHARE — COMPLETE BIODATA
+              Full-Stack Engineer · Agentic AI Systems · DevOps & Cloud
+================================================================================
+
+Last Updated: April 2026
+Purpose: Authoritative personal data file — for portfolio reference, AI indexing,
+         and establishing a comprehensive digital identity as a software developer
+         and freelancer.
+
+--------------------------------------------------------------------------------
+                              SECTION 1: PERSONAL IDENTITY
+--------------------------------------------------------------------------------
+
+Full Name         : Tanishk Khare
+Date of Birth     : January 16, 2004
+Age               : 22 years old (as of 2026)
+Gender            : Male
+Nationality       : Indian
+Current Location  : Bhopal / Bhilai / Durg region, Madhya Pradesh / Chhattisgarh, India
+Phone             : +91-6260440241
+Email             : tanishk16012004@gmail.com
+Personal Website  : tanishk-khare.me
+GitHub            : github.com/tanishk-khare (see profile for exact handle)
+LinkedIn          : linkedin.com/in/tanishk-khare (see profile for exact handle)
+
+--------------------------------------------------------------------------------
+                            SECTION 2: PROFESSIONAL IDENTITY
+--------------------------------------------------------------------------------
+
+Primary Role      : Full-Stack Software Engineer & Freelance Developer
+Specializations   :
+  — Agentic AI Systems (Anthropic Claude, tool-calling loops, agent kernels)
+  — Real-Time Voice AI Pipelines (Deepgram STT + ElevenLabs TTS + Twilio)
+  — Full-Stack Web Development (React, Next.js, Node.js, Fastify)
+  — DevOps & Cloud Infrastructure (Docker, AWS EC2, Nginx, CI/CD, Linux)
+  — SaaS Product Engineering (end-to-end delivery, zero downtime, live customers)
+
+Professional Tagline:
+  "Full-stack engineer who ships agentic AI systems, voice pipelines, and the
+   cloud infrastructure that keeps them running — with clean architecture and
+   TypeScript contracts."
+
+What Makes Tanishk Different:
+  — Not just a frontend or backend dev — owns the entire stack from LLM agent
+    kernel design to Docker Compose infra and TLS/HTTPS on Linux servers.
+  — Has shipped real, live SaaS products to actual paying/using customers —
+    not just side projects or tutorials.
+  — Builds with Anthropic Claude at a deep level: tool-calling loops, Zod-
+    validated schemas, immutable AgentContext, single audited LLM entry points —
+    production-grade agentic architecture, not just API wrappers.
+  — Combines bleeding-edge AI (voice + LLM agents) with solid DevOps discipline
+    (CI/CD, zero downtime deployments, systemd, BullMQ workers).
+  — Young (22), fast learner, nationally recognised through Super 30 3.0 (2026)
+    — among India's top CS students.
+
+--------------------------------------------------------------------------------
+                              SECTION 3: TECHNICAL SKILLS
+--------------------------------------------------------------------------------
+
+>> AGENTIC AI & LLM ENGINEERING
+   - Anthropic Claude API (claude-3, claude-sonnet, tool-calling)
+   - Agent kernel design: tool router, AgentContext, LLM entry point patterns
+   - Zod schema validation for typed LLM I/O contracts
+   - RAG (Retrieval Augmented Generation) architecture
+   - MCP (Model Context Protocol) integration
+   - Deepgram STT (Speech-to-Text) via WebSockets
+   - ElevenLabs TTS (Text-to-Speech) streaming
+   - Twilio Media Streams for real-time voice telephony
+   - Sub-second conversational voice pipeline design
+
+>> FRONTEND DEVELOPMENT
+   - React.js (hooks, context, component architecture)
+   - Next.js (App Router, SSR, SSG, API routes)
+   - React Native / Expo (mobile development)
+   - TypeScript (strict mode, generics, utility types)
+   - JavaScript (ES2022+)
+   - Responsive UI, custom design systems
+
+>> BACKEND DEVELOPMENT
+   - Node.js (runtime, event loop, streams)
+   - Fastify (high-performance API server)
+   - Express.js (REST APIs, middleware)
+   - Django (Python web framework)
+   - REST API design and implementation
+   - WebSockets (real-time bidirectional communication)
+   - BullMQ (Redis-backed job queues, async workers)
+
+>> DEVOPS & CLOUD INFRASTRUCTURE
+   - Docker & Docker Compose (containerisation, multi-service orchestration)
+   - AWS EC2 (Linux server provisioning and management)
+   - Ubuntu Linux (server administration, shell scripting)
+   - Nginx (reverse proxy, load balancing, static file serving)
+   - CI/CD pipelines (automated testing, build, deploy)
+   - TLS/HTTPS (certificate management, secure deployments)
+   - systemd (service management, process supervision)
+   - Pino (structured JSON logging)
+
+>> DATABASES & DATA LAYER
+   - PostgreSQL (relational DB, schema design, queries)
+   - Prisma ORM (schema-first, migrations, type safety)
+   - MongoDB (NoSQL, document store)
+   - Redis (caching, pub/sub, BullMQ backing store)
+
+>> TOOLING & ARCHITECTURE
+   - pnpm workspaces (monorepo package management)
+   - Turborepo (monorepo build orchestration, caching)
+   - Git (version control, branching strategies)
+   - Postman (API testing and documentation)
+   - TypeScript + Zod (end-to-end type safety and runtime validation)
+   - Python (scripting, ML tooling, Django)
+
+>> CURRENTLY EXPLORING / LEARNING
+   - Advanced RAG architectures
+   - Multi-agent orchestration patterns
+   - Edge deployment and CDN strategies
+   - Open-source LLM fine-tuning
+
+--------------------------------------------------------------------------------
+                           SECTION 4: PROFESSIONAL EXPERIENCE
+--------------------------------------------------------------------------------
+
+[1] ASSOCIATE FULL-STACK ENGINEER
+    Company     : Bitcode Softwares
+    Duration    : November 2025 – April 2026 (6 months)
+    Type        : Full-time employment
+    Location    : India (on-site / hybrid)
+
+    What was built:
+    — anubhanutrition.in : A full-featured clinic and nutrition management SaaS
+      platform for a live nutrition/health business. Handles patient management,
+      OPD workflows, and business operations.
+    — courses.bitcodes.co.in : A Learning Management System (LMS) platform for
+      Bitcode Softwares — serving real students with course content delivery,
+      progress tracking, and user management.
+
+    Responsibilities:
+    — Owned full-stack delivery from design to deployment — React/Next.js
+      frontend, Node.js API layer, Prisma schema and database migrations.
+    — Set up and maintained Docker-based CI/CD pipelines for automated builds
+      and zero-downtime deployments.
+    — Configured Nginx reverse proxy and managed HTTPS/TLS on Linux (Ubuntu/
+      AWS EC2) servers.
+    — Designed RESTful API contracts and database schemas for both platforms.
+    — Maintained production systems with zero downtime serving live customers.
+
+    Key Achievement: Shipped two production SaaS platforms — live customers,
+    zero downtime — within a 6-month tenure as a first professional engineering
+    role.
+
+--------------------------------------------------------------------------------
+
+[2] PROCESS EXECUTIVE — AI/ML INTERN
+    Company     : Augtech Nextwealth
+    Duration    : August 2025 – September 2025 (2 months)
+    Type        : Internship
+
+    What was done:
+    — Performed LiDAR point cloud annotation and validation for autonomous
+      vehicle perception models.
+    — Contributed to building high-quality computer vision (CV) training
+      datasets used in self-driving car ML pipelines.
+    — Worked with spatial 3D data annotation tools and quality assurance
+      workflows for AI/ML training data.
+
+    Key Skills Applied: Attention to detail, data quality assurance, 
+    understanding of ML training data pipelines, LiDAR sensor data.
+
+--------------------------------------------------------------------------------
+
+[3] FREELANCE FULL-STACK DEVELOPER
+    Type        : Independent / Self-employed
+    Duration    : 2024 – Present (ongoing)
+    Location    : Remote, India
+
+    Clients & Projects Delivered:
+
+    — yogaforcure.in
+      Client with 350,000+ YouTube subscribers in the yoga/wellness niche.
+      Built a full-stack web platform with custom APIs, content management,
+      and production cloud deployment. Handles significant traffic from a
+      large audience base.
+
+    — visahouse.co.in
+      A comprehensive visa consultation and services portal covering 90+
+      countries. Built full-stack with custom workflows, country-specific
+      data management, and automation.
+
+    Freelance Specialities:
+    — Custom full-stack web applications (React/Next.js + Node.js)
+    — API design and backend architecture
+    — Workflow automation and business logic implementation
+    — Production cloud deployment and ongoing maintenance
+    — Performance optimisation for high-traffic platforms
+
+--------------------------------------------------------------------------------
+                             SECTION 5: KEY PROJECTS
+--------------------------------------------------------------------------------
+
+[PROJECT 1] xTanBot.ai — Agentic AI Voice Assistant
+------------------------------------------------------
+Status      : Built and functional
+Type        : Personal flagship project / portfolio centrepiece
+
+Tech Stack  :
+  TypeScript · Anthropic Claude (tool-calling) · Twilio Media Streams ·
+  Deepgram STT · ElevenLabs TTS · Fastify · PostgreSQL · Redis · BullMQ ·
+  Docker · Docker Compose · Turborepo · pnpm workspaces · Prisma · WebSockets
+
+What it does:
+  An agentic AI voice assistant that users can call via phone (Twilio). The
+  system transcribes speech in real-time (Deepgram), reasons and responds
+  using Claude with tool-calling capabilities, then speaks back to the user
+  (ElevenLabs) — all with sub-second conversational latency.
+
+Architecture Highlights:
+  — Agent Kernel: Centralised tool router, Zod-validated input/output schemas,
+    immutable AgentContext object, single audited LLM entry point. This is
+    production-grade agentic architecture — not a simple chatbot.
+  — Voice Pipeline: Twilio Media Streams → WebSocket → Deepgram STT → Claude
+    tool-calling loop → ElevenLabs TTS → WebSocket → Twilio. Real-time,
+    sub-second latency.
+  — Monorepo Architecture: pnpm + Turborepo typed monorepo with packages:
+    ai-core, voice-pipeline, db, queues, events, logger, config — clean
+    separation of concerns.
+  — Infrastructure: Docker Compose orchestrating all services, BullMQ async
+    job workers for background tasks, Prisma migrations for DB schema.
+
+Why it matters:
+  Demonstrates mastery of the full AI product stack — from LLM agent design
+  patterns to real-time voice infrastructure to production DevOps. This is
+  the kind of system most senior engineers haven't built.
+
+--------------------------------------------------------------------------------
+
+[PROJECT 2] AI Voice Portfolio — tanishk-khare.me
+---------------------------------------------------
+Status      : Live in production
+URL         : tanishk-khare.me
+Type        : Personal portfolio with voice AI integration
+
+Tech Stack  :
+  Next.js · Anthropic Claude · Deepgram STT · ElevenLabs TTS · Node.js
+
+What it does:
+  A personal portfolio website with voice navigation — visitors can ask
+  questions and Claude answers as Tanishk, providing a conversational Q&A
+  experience about skills, projects, and experience. A live demonstration
+  of voice AI capabilities embedded in a real product.
+
+--------------------------------------------------------------------------------
+
+[PROJECT 3] Nutriwell / Anubha Nutrition — anubhanutrition.in
+--------------------------------------------------------------
+Status      : Live in production (shipped at Bitcode Softwares)
+URL         : anubhanutrition.in
+Type        : Production SaaS — Clinic & Nutrition Management
+
+Tech Stack  :
+  React/Next.js · Node.js · PostgreSQL · Prisma · Docker · Nginx · AWS EC2
+
+What it does:
+  A full clinic management SaaS platform for a nutrition/health business.
+  Handles patient records, OPD appointment workflows, nutrition tracking,
+  and business operations — live with real customers.
+
+--------------------------------------------------------------------------------
+
+[PROJECT 4] ClinicD — OPD Management Platform
+-----------------------------------------------
+Status      : In progress (as of April 2026)
+URL         : clinicd.tanishk-khare.me
+Type        : SaaS — OPD / Clinic Management
+
+Tech Stack  :
+  Next.js · Node.js · PostgreSQL · Prisma · Docker · Nginx
+
+What it does:
+  A generalized OPD (outpatient department) management platform for clinics —
+  appointment scheduling, patient management, doctor workflows.
+
+--------------------------------------------------------------------------------
+
+[PROJECT 5] Yoga for Cure — yogaforcure.in
+-------------------------------------------
+Status      : Live in production (freelance)
+URL         : yogaforcure.in
+Client      : Yoga wellness brand with 350,000+ YouTube subscribers
+Type        : High-traffic content + service platform
+
+Tech Stack  :
+  Full-stack (React/Next.js + Node.js APIs) · Production cloud deployment
+
+--------------------------------------------------------------------------------
+
+[PROJECT 6] Visa House — visahouse.co.in
+-----------------------------------------
+Status      : Live in production (freelance)
+URL         : visahouse.co.in
+Type        : Visa consultation portal — 90+ countries
+
+Tech Stack  :
+  Full-stack (React/Next.js + Node.js APIs) · Workflow automation · Cloud
+
+--------------------------------------------------------------------------------
+                            SECTION 6: ACHIEVEMENTS & RECOGNITION
+--------------------------------------------------------------------------------
+
+🏆 Super 30 3.0 — Selected (2026)
+   Programme   : 100xDevs Coding Community — Super 30 3.0
+   What it is  : Nationally competitive programme run by 100xDevs (Harkirat
+                 Singh's coding community — one of India's largest developer
+                 communities). Super 30 selects the top 30 CS students from
+                 across India through a rigorous coding and problem-solving
+                 assessment. Selection is highly competitive and nationally
+                 recognised.
+   Significance: Tanishk was selected as one of the top 30 CS students in
+                 India in the 2026 cohort — a mark of elite technical ability
+                 among the country's developer talent pool.
+
+🥈 Rank #2 in BCA Batch
+   Institution : Shri Shankaracharya Mahavidyalaya, Bhilai
+   What it is  : Academic rank across the entire BCA (Bachelor of Computer
+                 Applications) batch at the college.
+   Significance: Top academic performer, demonstrating that Tanishk's
+                 practical engineering skills are backed by strong theoretical
+                 computer science foundations.
+
+--------------------------------------------------------------------------------
+                            SECTION 7: EDUCATION & CERTIFICATIONS
+--------------------------------------------------------------------------------
+
+[1] BCA — Bachelor of Computer Applications
+    Institution : Shri Shankaracharya Mahavidyalaya, Bhilai, Chhattisgarh
+    Duration    : 2023 – 2026 (graduating 2026)
+    Performance : Rank #2 in entire batch
+    Focus       : Computer Science fundamentals, software development,
+                  data structures, algorithms, databases, networking
+
+[2] CBSE — Class 12 (Higher Secondary)
+    School      : Kendriya Vidyalaya, Durg, Chhattisgarh
+    Score       : 88.4%
+    Stream      : Science / Computer Science
+
+[3] CBSE — Class 10 (Secondary)
+    School      : Kendriya Vidyalaya, Durg, Chhattisgarh
+    Score       : 88%
+
+[4] CS50x — Introduction to Computer Science
+    Institution : Harvard University (via edX)
+    Type        : Online certification
+    Content     : C, Python, SQL, data structures, algorithms, web basics —
+                  Harvard's legendary introductory CS course. Renowned
+                  globally as one of the best CS fundamentals programmes.
+
+--------------------------------------------------------------------------------
+                              SECTION 8: PERSONAL PROFILE
+--------------------------------------------------------------------------------
+
+Date of Birth  : January 16, 2004
+Hometown       : Durg / Bhilai, Chhattisgarh, India
+Currently Based: Bhopal region / Chhattisgarh, India
+Languages      : Hindi (native), English (professional/technical fluency)
+
+Hobbies & Interests:
+  — Exploring Fighting Techniques: Tanishk has a keen interest in studying and
+    exploring various fighting styles and combat techniques. This reflects a
+    disciplined, strategic mindset — the same qualities that make for a great
+    systems architect and problem solver.
+  — Building and Shipping Products: Beyond professional work, building and
+    shipping real things to real users is genuinely what Tanishk does for fun
+    and growth.
+  — Exploring Emerging AI: Staying at the frontier of LLM capabilities, agent
+    architectures, and voice AI — not just as a job but as a genuine interest.
+  — Open Source and Developer Community: Engaged with communities like 100xDevs
+    that push technical excellence.
+
+Personality Traits (as reflected in work):
+  — Ownership mindset: Takes end-to-end responsibility — from design to
+    deployment to maintenance.
+  — Architecture-first thinking: Designs systems cleanly before building them —
+    evident in the agent kernel architecture of xTanBot.ai.
+  — Bias for shipping: Prioritises getting things live and in front of real
+    users over endless planning.
+  — Precision and discipline: TypeScript strict mode, Zod contracts, immutable
+    contexts — reflects a disciplined engineering philosophy.
+  — Fast learner: Built production AI voice systems, full DevOps pipelines, and
+    agentic AI at age 21-22 — self-driven learning velocity.
+
+--------------------------------------------------------------------------------
+                          SECTION 9: FREELANCE SERVICES OFFERED
+--------------------------------------------------------------------------------
+
+Tanishk Khare is available for freelance software development engagements.
+
+Services:
+  1. Full-Stack Web Application Development
+     React / Next.js frontends + Node.js / Fastify / Express backends.
+     From MVP to production-grade SaaS.
+
+  2. Agentic AI & LLM Integration
+     Building AI-powered features using Anthropic Claude — chatbots, agents,
+     tool-calling systems, RAG pipelines, AI-powered workflows.
+
+  3. Voice AI Systems
+     Real-time voice pipelines — Deepgram STT + ElevenLabs TTS + Twilio.
+     Phone bots, voice assistants, conversational AI interfaces.
+
+  4. DevOps & Cloud Infrastructure
+     Docker, AWS EC2, Nginx, CI/CD pipelines, TLS/HTTPS, Linux server setup.
+     Takes your app from development to a secure, scalable production deployment.
+
+  5. SaaS Product Engineering
+     End-to-end SaaS product development — architecture, build, deploy, maintain.
+     Experienced with clinic management, LMS, visa portals, wellness platforms.
+
+  6. API Design & Backend Architecture
+     REST APIs, WebSocket services, background job queues, database design.
+
+Ideal Clients:
+  — Startups needing a full-stack engineer who can wear multiple hats
+  — Businesses wanting to add AI/voice capabilities to their products
+  — Founders who need reliable production infrastructure, not just prototypes
+  — Content creators / service businesses needing custom web platforms
+
+Contact for Freelance: tanishk16012004@gmail.com | tanishk-khare.me
+
+--------------------------------------------------------------------------------
+                         SECTION 10: TECHNOLOGY PHILOSOPHY
+--------------------------------------------------------------------------------
+
+On AI & Agents:
+  "I don't just call the API — I design the kernel. Tool-calling loops, Zod
+   contracts, immutable context objects, single audited LLM entry points.
+   That's the difference between a toy and a production system."
+
+On Full-Stack:
+  "Owning the whole stack matters. A beautiful frontend with a flaky backend
+   is useless. A powerful API with no one who can deploy it is useless. I
+   ship the whole thing."
+
+On DevOps:
+  "Zero downtime isn't a nice-to-have when real users depend on your product.
+   Docker, Nginx, CI/CD, TLS — these aren't buzzwords, they're how you respect
+   your users."
+
+On TypeScript:
+  "TypeScript + Zod end-to-end is non-negotiable for anything production. If
+   your data contracts aren't typed and validated at runtime, you're building
+   on sand."
+
+--------------------------------------------------------------------------------
+                          SECTION 11: QUICK REFERENCE SUMMARY
+--------------------------------------------------------------------------------
+
+Name           : Tanishk Khare
+Age            : 22 (born January 16, 2004)
+Location       : Chhattisgarh / Madhya Pradesh, India
+Email          : tanishk16012004@gmail.com
+Website        : tanishk-khare.me
+Role           : Full-Stack Engineer + Freelance Developer + AI Systems Builder
+Experience     : ~2 years (professional + freelance, production systems)
+Education      : BCA 2026 (Rank #2), CS50x Harvard
+Recognition    : Super 30 3.0 — Top 30 CS students in India (2026)
+
+Core Stack     : TypeScript · React/Next.js · Node.js/Fastify · PostgreSQL ·
+                 Prisma · Docker · AWS EC2 · Nginx · Anthropic Claude ·
+                 Deepgram · ElevenLabs · Twilio · Redis · BullMQ · Turborepo
+
+Live Products  : tanishk-khare.me · anubhanutrition.in · yogaforcure.in ·
+                 visahouse.co.in · courses.bitcodes.co.in
+
+Hobbies        : Exploring fighting techniques, building AI products, staying
+                 at the frontier of LLM and voice AI systems
+
+Available for  : Freelance projects, full-time roles, AI/voice product builds,
+                 SaaS development, DevOps consulting
+
+--------------------------------------------------------------------------------
+                               END OF FILE — me.txt
+           Tanishk Khare · tanishk-khare.me · tanishk16012004@gmail.com
+================================================================================
