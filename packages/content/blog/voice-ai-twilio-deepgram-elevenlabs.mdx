@@ -1,0 +1,121 @@
+---
+title: "Building Real-Time Voice AI With Twilio, Deepgram, and ElevenLabs: A Production Guide"
+excerpt: "How to build a real-time AI voice pipeline that can handle phone calls — Twilio Media Streams, Deepgram WebSocket STT, Claude reasoning, ElevenLabs TTS — with sub-second latency."
+publishedAt: "2026-03-10"
+tags: ["Voice AI", "Twilio", "Deepgram", "ElevenLabs", "Real-Time", "TypeScript"]
+category: "engineering"
+featured: false
+seoTitle: "Real-Time Voice AI Pipeline: Twilio + Deepgram + ElevenLabs — Tanishk Khare"
+seoDesc: "Production guide to building voice AI with Twilio Media Streams, Deepgram STT, ElevenLabs TTS. By Tanishk Khare, voice AI developer from India."
+---
+
+# Building Real-Time Voice AI With Twilio, Deepgram, and ElevenLabs: A Production Guide
+
+I am **Tanishk Khare** — **voice AI developer** **India** **teams** **hire** when they need **phone-call** **real-time** **pipelines**, not **web** **widgets** **only**. **xTanBot.ai** is my **reference** **build**: **Twilio** **Media** **Streams**, **Deepgram** **STT**, **Anthropic** **Claude**, **ElevenLabs** **TTS**, **Fastify**, **Redis**, **Docker**. This guide is the **shape** of that system.
+
+---
+
+## 1. Pipeline Overview (ASCII)
+
+```
+Caller Phone
+    → PSTN → Twilio
+    → Twilio Media Streams (WebSocket, mulaw 8kHz)
+    → Your server (Fastify / Node)
+    → Deepgram (live STT, WebSocket)
+    → Agent kernel (Claude + tools)
+    → ElevenLabs (streaming TTS)
+    → Your server
+    → Twilio outbound audio
+    → Caller hears AI voice
+```
+
+---
+
+## 2. Twilio Media Streams
+
+You expose a **secure** **WSS** **URL** Twilio can reach. Audio arrives as **base64**-encoded **frames**; codec is typically **audio/x-mulaw** at **8 kHz**. Your **ingress** handler:
+
+- **Validates** **Twilio** **signatures** on **HTTP** **webhooks** **where** **applicable**.
+- **Associates** **stream** **events** with a **`callSid`** **session** **key**.
+
+---
+
+## 3. Deepgram Real-Time STT
+
+Open a **Deepgram** **live** **WebSocket** **connection** **per** **call** **or** **pooled** **carefully**. Configure:
+
+- **Model** **and** **language** for **your** **domain** (e.g. **general** vs **numbers**-heavy).
+- **Endpointing** — **when** **to** **emit** **final** **utterances** vs **interim** **results**.
+- **Interim** **results** **feed** **the** **UI** **or** **early** **LLM** **prefetch** **where** **safe**.
+
+```typescript
+// Sketch — not copy-paste production
+dgLive.on("Results", (data) => {
+  const transcript = data.channel?.alternatives?.[0]?.transcript ?? "";
+  const isFinal = data.is_final === true;
+  onTranscriptChunk({ transcript, isFinal, callSid });
+});
+```
+
+---
+
+## 4. Latency Budget
+
+**Rough** **buckets**:
+
+- **Twilio** **↔** **your** **region** — **network** **RTT**.
+- **STT** — **chunk** **size** + **model** **latency**.
+- **LLM** — **time** **to** **first** **token** + **tool** **round-trips**.
+- **TTS** — **first** **audio** **byte** from **ElevenLabs**.
+
+You **win** by **streaming** **everywhere** **possible**, **avoiding** **blocking** **on** **full** **sentences** **when** **interim** **text** **is** **good** **enough** **to** **start** **reasoning**, and **keeping** **tool** **calls** **minimal** **on** **the** **hot** **path**.
+
+---
+
+## 5. Connecting to Claude
+
+Use **Messages** **API** with **tool** **definitions** **matching** **your** **Zod** **schemas**. For **voice**, **streaming** **the** **assistant** **text** **into** **TTS** **incrementally** **reduces** **dead** **air** — **exact** **integration** **depends** on **how** **you** **chunk** **for** **ElevenLabs**.
+
+---
+
+## 6. ElevenLabs TTS
+
+- Pick **voice** **and** **model** **appropriate** **for** **telephony** **bandwidth**.
+- **Stream** **audio** **chunks** **back** **to** **Twilio**-compatible **frames** — **do** **not** **buffer** **entire** **paragraphs** **if** **you** **want** **snappy** **dialogue**.
+
+---
+
+## 7. Redis State During a Call
+
+Store **per** **`callSid`**:
+
+- **Latest** **stable** **transcript** **segment**.
+- **Conversation** **id** / **internal** **session** **id**.
+- **Barge-in** **flags** — **if** **user** **speaks** **again**, **cancel** **outstanding** **TTS**.
+
+Use **TTL** **so** **abandoned** **calls** **do** **not** **leak** **memory** **forever**.
+
+---
+
+## 8. Error Handling
+
+- **WebSocket** **disconnect** — **attempt** **controlled** **reconnect** **or** **graceful** **call** **end**.
+- **STT** **silence** / **timeout** — **prompt** **user** **or** **close** **session**.
+- **TTS** **timeout** — **fallback** **message** **or** **retry** **with** **shorter** **text**.
+
+---
+
+## 9. TypeScript Throughout
+
+**Fastify** **routes**, **adapters**, **and** **kernel** **are** **typed**. **Unknown** **JSON** **from** **any** **provider** **passes** **Zod** **first**.
+
+---
+
+## 10. Lessons from xTanBot.ai
+
+**Voice** **AI** **in** **production** **is** **systems** **engineering**: **media** **codecs**, **streaming** **backpressure**, **session** **state**, **and** **LLM** **discipline** **together**. I **build** **these** **systems** **for** **clients** **globally** — **tanishk16012004@gmail.com**.
+
+If you searched **voice AI developer India** or **hire** **Next.js** **developer** **India** **for** **real-time** **products**, **this** **is** **the** **depth** **behind** **the** **resume**.
+
+— **Tanishk Khare**

@@ -1,0 +1,113 @@
+---
+title: "Next.js Performance in Production: How I Get Sub-1s LCP on Every Project"
+excerpt: "The exact checklist I run on every Next.js project — image optimisation, font strategy, edge caching, code splitting, and the Lighthouse 100 workflow I used on anubhanutrition.in and yogaforcure.in."
+publishedAt: "2026-03-28"
+tags: ["Next.js", "Performance", "Web Development", "TypeScript", "Production"]
+category: "engineering"
+featured: true
+seoTitle: "Next.js Performance Optimisation Guide — Tanishk Khare, India"
+seoDesc: "How Tanishk Khare, freelance Next.js developer from India, achieves sub-1s LCP on production Next.js apps. Real checklist, real projects."
+---
+
+# Next.js Performance in Production: How I Get Sub-1s LCP on Every Project
+
+I am **Tanishk Khare**, a **freelance Next.js developer in India** and **Associate Full-Stack Engineer** at **Bitcode Softwares**. I ship **Next.js** apps that real users hit every day — **anubhanutrition.in** (clinic SaaS), **yogaforcure.in** (high-traffic wellness), **courses.bitcodes.co.in** (LMS). Performance is not a **Lighthouse** vanity metric; it is **trust**, **SEO**, and **conversion**. Here is the **checklist** I run on **every** project, and how I push **LCP** toward **sub-1s** where the stack allows.
+
+---
+
+## 1. Why Performance Matters
+
+Slow **LCP** loses users before they read your value prop. **CLS** trains users to distrust the UI. **INP** (and previously **FID**) punish janky interactions. Google uses **Core Web Vitals** as a ranking signal. For **production Next.js developer** work, my bar is simple: **measure first**, then **optimise** in order of **user impact**.
+
+---
+
+## 2. Images: `next/image` Done Properly
+
+On **anubhanutrition.in** and **yogaforcure.in**, hero and content images go through **`next/image`** with:
+
+- **Explicit width and height** (or **fill** with a sized parent) to reserve space → **lower CLS**.
+- **`sizes`** tuned to the layout — **mobile** vs **desktop** breakpoints get honest values, not `100vw` everywhere.
+- **WebP/AVIF** delivery via the **Image Optimization** pipeline.
+- **`priority`** only for the **LCP** image — usually the hero.
+
+```tsx
+import Image from "next/image";
+
+export function HeroImage() {
+  return (
+    <Image
+      src="/images/hero.webp"
+      alt="Product hero"
+      width={1200}
+      height={630}
+      priority
+      sizes="(max-width: 768px) 100vw, 70vw"
+      placeholder="blur"
+      blurDataURL="data:image/jpeg;base64,..."
+    />
+  );
+}
+```
+
+Blur placeholders are especially valuable on **content-heavy** pages like **yogaforcure.in** where **perceived** performance matters as much as **actual** **LCP**.
+
+---
+
+## 3. Fonts: `next/font`, Zero Layout Shift
+
+I use **`next/font/google`** (or local) so fonts are **self-hosted** and **layout-shift** is minimised. **`display: swap`** with a **metrics-matched** fallback keeps **CLS** low. I avoid loading **six weights** when **two** suffice — every **KB** competes with **LCP**.
+
+---
+
+## 4. Edge Caching, ISR, and SSG: Decision Tree
+
+- **Marketing pages** — often **SSG** or **ISR** with sensible **`revalidate`**.
+- **Dashboards** — **dynamic** rendering or **RSC** with **cached** fragments where safe.
+- **API responses** — **`Cache-Control`** for **public** read-mostly data; **never** cache **personalised** responses blindly.
+
+On **Vercel** or **Nginx**-fronted **Node**, I align **CDN** behaviour with **data freshness** expectations — **anubhanutrition.in** cannot show **stale** **medical-adjacent** data because of aggressive caching mistakes.
+
+---
+
+## 5. Code Splitting and Bundle Discipline
+
+- **`next/dynamic`** for heavy client-only components (**charts**, **editors**).
+- **Route-based** splitting is largely **automatic** in the **App Router** — I still **audit** **`@next/bundle-analyzer`** output.
+- **Tree-shake** **date-fns** / **lodash**-style imports — **named imports** only.
+
+---
+
+## 6. Core Web Vitals: Measure and Fix
+
+- **LCP** — largest **above-the-fold** paint; **images**, **fonts**, **server** **TTFB**.
+- **CLS** — **dimensions** on media, **font** strategy, **avoid** injecting **banners** **above** **content** without **reserving** **space**.
+- **INP** — **split** **long** **tasks**, **debounce** **handlers**, **avoid** **blocking** **main** **thread** **work** on **interaction**.
+
+---
+
+## 7. Real Example: anubhanutrition.in / yogaforcure.in
+
+Both required **fast** **first paint** for **mobile** users on **4G**. The wins came from **image** **discipline**, **font** **subset**, **eliminating** **render-blocking** **third-party** **scripts** where possible, and **server** **components** for **read-heavy** **UI** so **JavaScript** **payload** **shrinks**. Exact **millisecond** numbers vary by **deploy** and **content** — the **pattern** is **repeatable**: **measure**, **cut** **JS**, **optimise** **LCP** **asset**, **verify** **CLS**.
+
+---
+
+## 8. The Lighthouse 100 Workflow
+
+1. **Incognito**, **throttled** **CPU**/**network**.
+2. **Mobile** first.
+3. Fix **LCP** and **CLS** before chasing **perfect** **100** on **desktop**.
+4. **Re-run** after **every** **dependency** **bump** that touches **client** **code**.
+
+---
+
+## 9. TypeScript and Zod on the API Boundary
+
+Performance is not only **frontend**. **Runtime** **surprises** from **bad** **JSON** cause **retries**, **errors**, and **slow** **UX**. I use **Zod** on **API** **responses** **consumed** by **Next.js** **server** **code** where **appropriate**, so **invalid** **payloads** **fail** **fast** and **loudly** — **TypeScript** **alone** is not enough for **production**.
+
+---
+
+## 10. Hire Me for Performance and Full-Stack
+
+If you need a **freelance Next.js developer in India** for **performance audits**, **refactors**, or **greenfield** **SaaS**, I bring **Bitcode**-grade **production** **discipline** and **freelance** **ownership**. Email **tanishk16012004@gmail.com** — **best freelancer India** is not a **title**; it is **proven** **by** **what** **ships**.
+
+— **Tanishk Khare**

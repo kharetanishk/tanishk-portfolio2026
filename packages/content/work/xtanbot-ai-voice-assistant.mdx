@@ -1,0 +1,46 @@
+---
+title: "xTanBot.ai — Production Agentic AI Voice Assistant"
+client: "Personal Flagship Project"
+clientCountry: "India"
+category: "Agentic AI / Voice AI"
+summary: "A phone-callable agentic AI assistant: Twilio Media Streams, Deepgram STT, Anthropic Claude with tool-calling, ElevenLabs TTS, Fastify, PostgreSQL, Redis, BullMQ — monorepo with typed agent kernel and Docker."
+problem: "Most voice AI demos are fragile: no validated tool layer, no immutable session context, no latency budget, no production observability. Building a voice AI system that works in production — not a Jupyter notebook — requires architecture from the kernel outward."
+solution: "Designed an agent kernel with centralised tool router, Zod-validated I/O, immutable AgentContext snapshots, and a single audited Claude entry point. Voice pipeline: Twilio → WebSocket → Deepgram → tool loop → ElevenLabs → Twilio. Packaged as Turborepo with ai-core, voice-pipeline, db, queues, events, logger, config. Redis for session state; BullMQ for durable side-effects; Docker Compose for reproducible environments."
+result: "A live system demonstrating sub-second conversational latency targets, production logging, and full-stack ownership from LLM design to container orchestration — proof of agentic AI and voice AI execution at a level global clients expect when they search best freelancer India or voice AI developer India."
+featured: true
+completedAt: "2026-03-01"
+techStack: ["TypeScript", "Anthropic Claude", "Twilio Media Streams", "Deepgram STT", "ElevenLabs TTS", "Fastify", "PostgreSQL", "Redis", "BullMQ", "Docker", "Turborepo", "Prisma", "WebSockets"]
+metrics:
+  latency: "Sub-second conversational latency"
+  architecture: "Production-grade agent kernel"
+  monorepo_packages: "7 typed packages"
+  infrastructure: "Docker Compose, full DevOps"
+liveUrl: "https://tanishk-khare.me"
+---
+
+## Problem
+
+The market is full of **voice AI** **demos** that **collapse** **under** **real** **calls**: **no** **tool** **governance**, **no** **runtime** **validation** **of** **model** **output**, **no** **clear** **session** **model**, **no** **path** **to** **observability**. **Founders** **who** **search** **agentic** **AI** **developer** **India** **need** **evidence** **that** **the** **engineer** **understands** **production**, **not** **only** **APIs**.
+
+## Solution
+
+**xTanBot.ai** **is** **my** **answer**: **Twilio** **Media** **Streams** **for** **telephony** **ingress**, **Deepgram** **for** **streaming** **STT**, **Anthropic** **Claude** **for** **reasoning** **and** **tool** **use**, **ElevenLabs** **for** **natural** **TTS**, **Fastify** **for** **WebSocket** **and** **HTTP** **edges**, **PostgreSQL** **+** **Prisma** **for** **persistence**, **Redis** **+** **BullMQ** **for** **state** **and** **async** **work**, **Docker** **for** **parity** **across** **environments**.
+
+**Architectural** **choices**:
+
+- **Agent** **kernel** **—** **one** **place** **owns** **turn** **semantics** **and** **tool** **dispatch**.
+- **Zod** **—** **every** **external** **payload** **parsed** **before** **use**.
+- **Immutable** **context** **—** **debuggable** **traces** **per** **turn**.
+- **Monorepo** **packages** **—** **ai-core**, **voice-pipeline**, **db**, **queues**, **events**, **logger**, **config** **so** **boundaries** **stay** **honest**.
+
+## Technical breakdown
+
+**Voice** **path** **is** **streaming** **end-to-end** **where** **possible** **to** **minimise** **time-to-first-audio** **after** **the** **user** **stops** **speaking**. **Tool** **calls** **that** **touch** **slow** **systems** **run** **with** **timeouts** **and** **structured** **errors** **fed** **back** **into** **Claude** **so** **the** **caller** **gets** **a** **natural** **recovery** **instead** **of** **silence**.
+
+**Infrastructure** **matches** **what** **I** **deploy** **for** **clients** **on** **AWS** **EC2** **with** **Nginx** **and** **TLS** **—** **the** **same** **respect** **for** **uptime** **and** **reproducibility**.
+
+## Result
+
+**xTanBot.ai** **proves** **I** **can** **own** **agentic** **AI**, **voice** **pipelines**, **and** **DevOps** **as** **one** **engineer** **—** **the** **profile** **US** **startups** **want** **when** **they** **hire** **full** **stack** **developer** **India** **for** **cutting-edge** **products**.
+
+**Contact:** **tanishk16012004@gmail.com** · **https://tanishk-khare.me**

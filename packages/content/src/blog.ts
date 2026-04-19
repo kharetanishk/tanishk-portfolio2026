@@ -19,14 +19,18 @@ export interface BlogPost {
   ogImage?: string;
 }
 
-const BLOG_DIR = path.join(process.cwd(), "packages", "content", "blog");
-
-function resolveContentDir(base: string): string {
-  if (fs.existsSync(base)) return base;
-  const alt = path.join(__dirname, "..", "blog");
-  if (fs.existsSync(alt)) return alt;
-  const root = path.resolve(__dirname, "../../..");
-  return path.join(root, "packages", "content", "blog");
+/** Resolved relative to monorepo root: `packages/content/blog/` */
+function resolveBlogDir(): string {
+  const candidates = [
+    path.join(process.cwd(), "packages", "content", "blog"),
+    path.join(process.cwd(), "..", "..", "packages", "content", "blog"),
+    path.join(__dirname, "..", "blog"),
+    path.resolve(__dirname, "..", "..", "..", "packages", "content", "blog"),
+  ];
+  for (const dir of candidates) {
+    if (fs.existsSync(dir)) return dir;
+  }
+  return path.join(process.cwd(), "packages", "content", "blog");
 }
 
 function parseBlogFile(filePath: string, slug: string): BlogPost {
@@ -52,7 +56,7 @@ function parseBlogFile(filePath: string, slug: string): BlogPost {
 }
 
 export function getAllPosts(): BlogPost[] {
-  const dir = resolveContentDir(BLOG_DIR);
+  const dir = resolveBlogDir();
   if (!fs.existsSync(dir)) return [];
 
   const files = fs
@@ -70,7 +74,7 @@ export function getAllPosts(): BlogPost[] {
 }
 
 export function getPostBySlug(slug: string): BlogPost | null {
-  const dir = resolveContentDir(BLOG_DIR);
+  const dir = resolveBlogDir();
   const mdxPath = path.join(dir, `${slug}.mdx`);
   const mdPath = path.join(dir, `${slug}.md`);
 

@@ -1,0 +1,147 @@
+---
+title: "Docker + AWS EC2 + Nginx: The Production Deployment Stack I Use for Every Node.js Project"
+excerpt: "The exact infrastructure setup I use to deploy Node.js and Next.js apps to production — Docker Compose, AWS EC2, Nginx reverse proxy, TLS/HTTPS, CI/CD, zero downtime. No hand-waving."
+publishedAt: "2026-02-28"
+tags: ["Docker", "AWS", "Nginx", "DevOps", "Node.js", "Production"]
+category: "devops"
+featured: false
+seoTitle: "Docker AWS EC2 Nginx Node.js Production Deployment — Tanishk Khare"
+seoDesc: "Production deployment guide: Docker Compose + AWS EC2 + Nginx + TLS. The exact stack used on anubhanutrition.in. By Tanishk Khare, DevOps freelancer India."
+---
+
+# Docker + AWS EC2 + Nginx: The Production Deployment Stack I Use for Every Node.js Project
+
+I am **Tanishk Khare**, **full-stack engineer** **India**, **Bitcode Softwares** (**Associate Full-Stack Engineer**, **Nov 2025**–**Apr 2026**). I deploy **Next.js** and **Node.js** apps that **real** **users** rely on — **anubhanutrition.in**, **courses.bitcodes.co.in**, plus **freelance** properties like **yogaforcure.in** and **visahouse.co.in**. **Docker** **+** **AWS** **EC2** **+** **Nginx** is my **default** **production** **triangle**: **portable** **containers**, **predictable** **VPS** **control**, **flexible** **TLS** **and** **routing**. **Zero downtime** is not a **slogan** — it is **how** **you** **respect** **users**.
+
+---
+
+## 1. Why This Stack
+
+- **Docker** — same **artifact** **dev** → **prod**; **no** **“works on my machine”** **excuses**.
+- **EC2** — **full** **control** **of** **networking**, **disk**, **and** **cost** **tuning** **for** **Indian** **SaaS** **and** **global** **clients**.
+- **Nginx** — **TLS** **termination**, **reverse** **proxy** **to** **Next** **and** **API** **processes**, **static** **caching**, **rate** **limits** **where** **needed**.
+
+---
+
+## 2. EC2 Baseline
+
+- **Ubuntu** **LTS**, **security** **groups** **locked** **to** **22** **(bastion/VPN)**, **80**, **443** **only** **publicly** **where** **appropriate**.
+- **Non-root** **deploy** **user**, **SSH** **keys** **only**.
+- **Chrony** **or** **ntp** **for** **clock** **sync** (**TLS** **logs** **and** **JWT** **expiry** **care**).
+
+---
+
+## 3. Docker Compose Structure
+
+Typical **services**:
+
+- **`app`** — **Next.js** **standalone** **or** **Node** **API** **image**.
+- **`postgres`** — **managed** **RDS** **in** **some** **deployments**; **Compose** **Postgres** **for** **single-node** **stacks**.
+- **`redis`** — **sessions**, **queues**, **cache**.
+
+```yaml
+# docker-compose.yml (illustrative excerpt)
+services:
+  web:
+    build: .
+    env_file: .env.production
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "127.0.0.1:3000:3000"
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:7-alpine
+volumes:
+  pgdata:
+```
+
+Bind **only** **to** **localhost** **behind** **Nginx** **on** **the** **same** **host**.
+
+---
+
+## 4. Nginx Reverse Proxy
+
+```nginx
+# /etc/nginx/sites-available/anubha (illustrative)
+server {
+    listen 443 ssl http2;
+    server_name anubhanutrition.in;
+
+    ssl_certificate     /etc/letsencrypt/live/anubhanutrition.in/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/anubhanutrition.in/privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+**Same** **pattern** **for** **courses.bitcodes.co.in** **with** **distinct** **`server_name`** **and** **certs**.
+
+---
+
+## 5. TLS With Let’s Encrypt
+
+**Certbot** **—** **HTTP-01** **or** **DNS** **challenge** **depending** **on** **DNS** **provider**. **Auto-renewal** **via** **cron** **or** **systemd** **timer**. **HSTS** **only** **after** **you** **are** **sure** **HTTPS** **works** **everywhere**.
+
+---
+
+## 6. CI/CD (GitHub Actions → SSH → Deploy)
+
+Minimal **pattern**:
+
+1. **On** **push** **to** **`main`**, **run** **tests** **and** **`docker build`**.
+2. **SSH** **to** **EC2** **`git pull`** **or** **`docker compose pull`** **+** **`up -d`**.
+3. **Health** **check** **endpoint** **must** **pass** **before** **swap** **traffic** **(blue/green** **if** **you** **run** **two** **nodes**).
+
+For **single** **EC2**, **`docker compose up -d --build`** **with** **brief** **restart** **—** **minimise** **downtime** **by** **pre-building** **images** **on** **CI** **and** **pulling** **tags**.
+
+---
+
+## 7. Zero-Downtime Tactics (Single Node)
+
+- **Pre-pull** **new** **image** **before** **`up`**.
+- **Health** **route** **`/health`** **—** **DB** **ping** **+** **Redis** **optional**.
+- **Graceful** **shutdown** **SIGTERM** **in** **Node** **—** **drain** **HTTP** **before** **exit**.
+
+---
+
+## 8. systemd Supervision
+
+**Optional** **—** **sometimes** **I** **run** **Docker** **via** **systemd** **units** **or** **use** **`restart:`** **policies** **in** **Compose**. **Pick** **one** **story** **per** **server** **so** **on-call** **is** **not** **guesswork**.
+
+---
+
+## 9. Pino Logging in Production
+
+Structured **JSON** **logs** **to** **stdout**, **aggregated** **by** **your** **hosting** **or** **CloudWatch** **agent**. **Correlation** **ids** **per** **request** **—** **non-negotiable** **for** **debugging** **multi-service** **failures**.
+
+---
+
+## 10. Real Deployments
+
+**anubhanutrition.in** **and** **courses.bitcodes.co.in** **ran** **on** **this** **class** **of** **stack** **during** **my** **Bitcode** **tenure** — **Dockerised** **apps**, **Nginx** **TLS**, **AWS** **EC2**, **measurable** **uptime** **expectations**. **Freelance** **sites** **follow** **the** **same** **discipline** **where** **I** **own** **infra**.
+
+---
+
+## Hire Me
+
+**Docker** **DevOps** **India** **search** **—** **if** **you** **need** **someone** **who** **ships** **the** **app** **and** **the** **boxes** **it** **runs** **in**, **email** **tanishk16012004@gmail.com**. **Best** **freelancer** **India** **for** **infra-aware** **full-stack** **—** **evidence** **above**.
+
+— **Tanishk Khare**

@@ -1,15 +1,13 @@
-"use client";
+import { generateJsonLd } from "@repo/config";
 
-import { generateJsonLd, type ArticleJsonLdData } from "@repo/config";
-
-interface JsonLdProps {
+export function JsonLdScript({
+  type,
+  data,
+}: {
   type: "person" | "website" | "article";
-  data?: Partial<ArticleJsonLdData>;
-}
-
-export function JsonLd({ type, data }: JsonLdProps) {
+  data?: Record<string, unknown>;
+}) {
   const schema = generateJsonLd(type, data);
-
   return (
     <script
       type="application/ld+json"

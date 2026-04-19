@@ -1,0 +1,138 @@
+---
+title: "Agentic AI With Anthropic Claude: Tool-Calling Architecture That Actually Works in Production"
+excerpt: "Stop wrapping the Claude API in a try-catch and calling it an agent. Here is the tool-calling architecture I use in production — agent kernel, Zod contracts, immutable context, single LLM entry point."
+publishedAt: "2026-03-20"
+tags: ["Agentic AI", "Anthropic Claude", "Tool Calling", "TypeScript", "Production"]
+category: "engineering"
+featured: false
+seoTitle: "Production Claude API Tool-Calling Architecture — Tanishk Khare"
+seoDesc: "How to build production-grade agentic AI with Anthropic Claude. Tool router, Zod schemas, AgentContext pattern. By Tanishk Khare, AI developer India."
+---
+
+# Agentic AI With Anthropic Claude: Tool-Calling Architecture That Actually Works in Production
+
+I am **Tanishk Khare**, **22**, a **full-stack engineer** from **India**, **Super 30 3.0** (**100xDevs**, **2026**), and the builder of **xTanBot.ai**. If you are searching **agentic AI developer India** or **Claude API developer India**, this post is the **technical** **bar** you should expect: **tool-calling** that is **typed**, **audited**, and **recoverable** — not a **fetch** in a **try/catch** with a **JSON.parse** and hope.
+
+---
+
+## 1. Wrapper vs Agent
+
+A **wrapper** sends user text to **Claude** and streams the reply. An **agent** **decides** **when** to **invoke** **capabilities** — **database** **lookups**, **HTTP** **calls**, **voice** **actions** — and **integrates** **results** **back** into the **conversation**. The **difference** is **state**, **control flow**, and **failure** **semantics**. **Production** **requires** the second.
+
+---
+
+## 2. The Agent Kernel
+
+The **kernel** owns:
+
+- **Conversation state** (immutable snapshots).
+- **Tool registry** (name → schema → handler).
+- **LLM adapter** (one **audited** **entry** **point** for **Messages API** calls).
+- **Policies** — max turns, max tools per turn, timeouts.
+
+Everything else — **HTTP routes**, **WebSockets**, **queues** — **calls** **into** the **kernel**, not **around** it.
+
+---
+
+## 3. Tool Router
+
+Tools are **not** **stringly-typed** **functions**. They are **registered** **objects**:
+
+```typescript
+import { z } from "zod";
+
+export const LookupOrderInput = z.object({ orderId: z.string().min(1) });
+export const LookupOrderOutput = z.object({
+  status: z.enum(["pending", "shipped", "delivered"]),
+  trackingUrl: z.string().url().optional(),
+});
+
+export type LookupOrderInput = z.infer<typeof LookupOrderInput>;
+export type LookupOrderOutput = z.infer<typeof LookupOrderOutput>;
+
+export const lookupOrderTool = {
+  name: "lookup_order",
+  description: "Fetch order status by order id.",
+  inputSchema: LookupOrderInput,
+  outputSchema: LookupOrderOutput,
+  async execute(ctx: AgentContext, input: LookupOrderInput): Promise<LookupOrderOutput> {
+    // ... prisma / http ...
+    return LookupOrderOutput.parse(/* ... */);
+  },
+};
+```
+
+The **router** **dispatches** **by** **name** and **validates** **input** **before** **execute** and **output** **before** **return**.
+
+---
+
+## 4. Immutable AgentContext
+
+```typescript
+export type AgentContext = Readonly<{
+  sessionId: string;
+  turn: number;
+  messages: ReadonlyArray<ClaudeMessage>;
+  toolTrace: ReadonlyArray<ToolTraceEntry>;
+}>;
+```
+
+Each **turn** **produces** a **new** **context** **value** (or **persistent** **structure** **with** **copy-on-write** **discipline**). **Debugging** **production** **agentic** **failures** without this is **pain**.
+
+---
+
+## 5. Zod at Every Boundary
+
+**TypeScript** does not **exist** at **runtime**. **Claude** returns **tool_use** **blocks** with **JSON**. **Zod.parse** is **non-negotiable** for **inputs** **and** **outputs** that **touch** **tools** or **external** **systems**.
+
+---
+
+## 6. Single Audited LLM Entry Point
+
+```typescript
+export async function runClaudeTurn(
+  ctx: AgentContext,
+  request: ClaudeRequest
+): Promise<ClaudeResponse> {
+  logger.info({ sessionId: ctx.sessionId, turn: ctx.turn }, "claude.request");
+  const response = await anthropic.messages.create(request);
+  logger.info({ sessionId: ctx.sessionId, usage: response.usage }, "claude.response");
+  return response;
+}
+```
+
+**Rate limits**, **logging**, **redaction**, and **future** **middleware** (**PII** **stripping**) **live** **here** — **not** **scattered** **across** **routes**.
+
+---
+
+## 7. Errors in Tool Loops
+
+When a **tool** **throws**:
+
+- **Catch** **inside** the **router**, **return** a **structured** **error** **object** **to** the **model** **as** **tool_result** **content** (per **Anthropic** **patterns**), **not** a **generic** **500** **page**.
+- **Distinguish** **retryable** (**network**) vs **fatal** (**invalid** **id**).
+
+The **conversation** **continues**; the **agent** **explains** **or** **asks** **for** **clarification**.
+
+---
+
+## 8. Streaming vs Non-Streaming
+
+- **Voice** and **chat** **UX** often need **streaming** **text** for **time-to-first-token**.
+- **Batch** **jobs** (e.g. **summarise** **100** **records**) may use **non-streaming** **for** **simpler** **control** **flow**.
+
+I choose **per** **surface**, not **globally**.
+
+---
+
+## 9. Voice Pipelines (Deepgram + ElevenLabs)
+
+The **kernel** **does** **not** **know** **about** **mulaw** **audio**. **Voice** **adapters** **translate** **audio** ↔ **text** and **call** the **same** **kernel** **turn** **function** as **HTTP** **chat**. That **separation** is how **xTanBot.ai** stays **maintainable**.
+
+---
+
+## 10. Positioning: Claude API Integration in India
+
+For **hire** **full** **stack** **developer** **India** **searches** that **actually** **need** **Claude** **—** **tool** **use**, **multi-step** **flows**, **production** **SLOs** **—** the **deliverable** is **this** **architecture**. I am **available** **globally**: **tanishk16012004@gmail.com**, **https://tanishk-khare.me**.
+
+— **Tanishk Khare**, **agentic AI** **+** **voice** **AI** **engineer**

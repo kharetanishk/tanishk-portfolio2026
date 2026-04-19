@@ -64,8 +64,6 @@ export function generateMetadata(page: PageMeta) {
       title: fullTitle,
       description: page.description,
       images: [ogImageUrl],
-      creator: "@tanishkkhare",
-      site: "@tanishkkhare",
     },
   };
 }

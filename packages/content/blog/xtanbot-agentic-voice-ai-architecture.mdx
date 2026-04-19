@@ -1,0 +1,191 @@
+---
+title: "Building xTanBot.ai: A Production-Grade Agentic AI Voice Assistant Architecture"
+excerpt: "How I designed and shipped a real-time AI voice assistant with Anthropic Claude, Twilio, Deepgram, and ElevenLabs — including the agent kernel architecture that makes it production-grade, not just a demo."
+publishedAt: "2026-04-10"
+tags: ["Agentic AI", "Voice AI", "Anthropic Claude", "TypeScript", "Architecture"]
+category: "engineering"
+featured: true
+seoTitle: "Building a Production Agentic AI Voice Assistant — Tanishk Khare"
+seoDesc: "Deep technical breakdown of xTanBot.ai — agentic AI voice assistant with Claude tool-calling, Deepgram STT, ElevenLabs TTS, Twilio. Built by Tanishk Khare, India."
+---
+
+# Building xTanBot.ai: A Production-Grade Agentic AI Voice Assistant Architecture
+
+I am Tanishk Khare, a 22-year-old freelance full-stack engineer from Bhilai and Bhopal, India. In 2026 I was selected for **Super 30 3.0** by 100xDevs — one of the top thirty computer science students in the country through a national competitive assessment. That selection matters because it reflects the same discipline I bring to production systems: not demos, not tutorials, but **shipped software** with real architecture.
+
+**xTanBot.ai** is my flagship project: a **production-grade agentic AI voice assistant** that handles real phone calls — Twilio in, reasoning and tool use with **Anthropic Claude**, speech-to-text with **Deepgram**, text-to-speech with **ElevenLabs**, all wired through **Fastify**, **PostgreSQL**, **Redis**, **BullMQ**, and **Docker**, in a **Turborepo** monorepo with typed packages. This article is the architecture story: what breaks in naive “voice AI” demos, and how I designed a **kernel** that survives production.
+
+---
+
+## 1. What xTanBot.ai Actually Does
+
+A user places a phone call. Twilio routes the audio stream to my stack over **WebSockets** (**Twilio Media Streams**). I do not “batch record and transcribe” like a toy — I run a **real-time loop**: audio chunks flow to **Deepgram** for streaming STT, partial and final transcripts feed an **agent kernel** that calls **Claude** with **tool definitions**, executes tools against validated schemas, and streams the assistant’s reply to **ElevenLabs** for TTS, then back over the socket to Twilio. The user hears a **conversational** assistant, not a voicemail bot.
+
+That loop is easy to describe and hard to get right. Most “voice AI” projects fail because they treat the LLM as a black box behind a single HTTP call, with no **immutable context**, no **audited tool path**, and no **latency budget**.
+
+---
+
+## 2. Why Most Voice AI Demos Fail in Production
+
+**Demos** optimize for a screen recording. **Production** optimizes for dropped packets, duplicate WebSocket frames, partial transcripts, tool failures, and users who interrupt mid-sentence.
+
+Common failure modes:
+
+- **No agent kernel** — the “agent” is `await openai.chat.completions.create` in a route handler. There is no single place that owns state, tools, or safety.
+- **No runtime validation** — TypeScript types at compile time do not validate JSON from the model at runtime. One malformed tool call corrupts the call.
+- **Latency stacking** — STT batching + blocking TTS + cold HTTP to the LLM pushes you past the threshold where conversation feels natural. I targeted **sub-second** perceived latency for the path that matters after the user stops speaking.
+
+I built xTanBot.ai to answer: *what does a production agent look like when voice is the interface?*
+
+---
+
+## 3. The Agent Kernel: Tool Router, Immutable Context, Single LLM Entry
+
+The **kernel** is not the LLM. The kernel is the **orchestration layer** that owns:
+
+1. **AgentContext** — immutable, versioned snapshots of everything the agent is allowed to know for this turn.
+2. **Tool router** — registers tools by name, validates inputs and outputs with **Zod**, executes with timeouts and structured errors.
+3. **Single audited LLM entry point** — every completion goes through one module so logging, redaction, and rate limits apply consistently.
+
+### AgentContext (sketch)
+
+```typescript
+import { z } from "zod";
+
+export const AgentContextSchema = z.object({
+  callSid: z.string(),
+  sessionId: z.string(),
+  turn: z.number().int().nonnegative(),
+  userId: z.string().optional(),
+  transcriptBuffer: z.string(),
+  toolResults: z.array(
+    z.object({
+      toolName: z.string(),
+      ok: z.boolean(),
+      payload: z.unknown(),
+    })
+  ),
+  metadata: z.record(z.string(), z.unknown()).default({}),
+});
+
+export type AgentContext = z.infer<typeof AgentContextSchema>;
+
+export function nextContext(
+  ctx: AgentContext,
+  patch: Partial<AgentContext>
+): AgentContext {
+  return AgentContextSchema.parse({ ...ctx, ...patch, turn: ctx.turn + 1 });
+}
+```
+
+Immutability here is not dogma — it is **debuggability**. When something goes wrong on a live call, I can log the exact context snapshot for that turn.
+
+### Tool router pattern
+
+```typescript
+type ToolHandler<TIn, TOut> = {
+  name: string;
+  input: z.ZodType<TIn>;
+  output: z.ZodType<TOut>;
+  run: (ctx: AgentContext, input: TIn) => Promise<TOut>;
+};
+
+export class ToolRouter {
+  private readonly tools = new Map<string, ToolHandler<unknown, unknown>>();
+
+  register<TIn, TOut>(tool: ToolHandler<TIn, TOut>): void {
+    this.tools.set(tool.name, tool as ToolHandler<unknown, unknown>);
+  }
+
+  async dispatch(
+    ctx: AgentContext,
+    name: string,
+    rawInput: unknown
+  ): Promise<unknown> {
+    const tool = this.tools.get(name);
+    if (!tool) throw new Error(`Unknown tool: ${name}`);
+    const input = tool.input.parse(rawInput);
+    return tool.output.parse(await tool.run(ctx, input));
+  }
+}
+```
+
+### Zod at the boundary
+
+Every tool input the model emits is **parsed** before execution. Every output is **parsed** before it is shown to the model again. That is how you turn “sometimes JSON” into a **contract**.
+
+---
+
+## 4. The Voice Pipeline: End-to-End Data Flow
+
+Conceptually:
+
+```
+Twilio Media Streams (mulaw 8kHz)
+    → WebSocket ingress (Fastify)
+    → Deepgram live STT (streaming partials + finals)
+    → Agent kernel: build messages + tool loop (Claude)
+    → ElevenLabs streaming TTS
+    → WebSocket egress → Twilio playback
+```
+
+The **WebSocket handler** (simplified) coordinates backpressure: I do not send a mile-long TTS job if the user has already started speaking again (barge-in). Redis holds **short-lived session state** — last transcript checkpoint, active ElevenLabs request id, etc. **BullMQ** handles **async** work that must not block the hot path: persisting call logs, analytics, or retrying a failed tool side-effect.
+
+---
+
+## 5. Sub-Second Latency: What Actually Matters
+
+“Sub-second” is not one trick. It is **budgeting**:
+
+- **Streaming STT** — partial transcripts let the kernel start “thinking” before the user fully finishes, where safe.
+- **Streaming LLM** — first token latency matters more than total tokens for perceived responsiveness.
+- **Streaming TTS** — ElevenLabs can emit audio chunks; I pipeline them to Twilio instead of waiting for a full MP3.
+- **Co-located services** — Docker Compose for dev; production topology keeps RTT between internal hops low.
+
+I am a **voice AI developer in India** shipping for global expectations: callers do not care where the server runs if the conversation feels instant. They *do* care if every turn adds two seconds of dead air.
+
+---
+
+## 6. Monorepo Layout: Packages That Match the Mental Model
+
+Turborepo + pnpm workspaces, roughly:
+
+- **`ai-core`** — agent kernel, tool router, prompts, Claude client wrapper, Zod schemas.
+- **`voice-pipeline`** — Twilio adapters, audio framing, Deepgram/ElevenLabs clients.
+- **`db`** — Prisma, repositories, migrations.
+- **`queues`** — BullMQ producers/consumers, retry policies.
+- **`events`** — internal event types for observability.
+- **`logger`** — Pino, structured fields, correlation ids per `callSid`.
+- **`config`** — env validation with Zod, no `process.env` sprinkled in random files.
+
+This structure is how I stay **fast** as a solo engineer: boundaries are real folders, not comments.
+
+---
+
+## 7. BullMQ and Redis
+
+**Redis** holds ephemeral call state and backs **BullMQ** queues — e.g. “persist transcript after call ends,” “enqueue follow-up CRM sync.” The hot voice path does not depend on a queue drain to proceed; queues are for **durability** and **decoupling**, not for hiding latency in the user-facing loop.
+
+---
+
+## 8. Docker Compose
+
+Everything I need for a faithful prod-like dev environment runs in **Docker Compose**: API, worker, Postgres, Redis, and the dependencies my Makefile/scripts expect. That is the same **DevOps** mindset I use on **anubhanutrition.in** and **courses.bitcodes.co.in** at Bitcode Softwares — **zero downtime** is not accidental; it starts with **reproducible** environments.
+
+---
+
+## 9. Lessons Learned
+
+- **The model will hallucinate tool calls** — Zod + explicit tool registry is your firewall.
+- **Voice UX is unforgiving** — optimize time-to-first-audio-byte, not just model quality.
+- **Ownership beats buzzwords** — I own frontend, backend, LLM integration, voice, queues, and deployment. That is what **hire full stack developer India** should mean when you need **agentic AI** in production.
+
+---
+
+## 10. Work With Me
+
+If you need **agentic AI**, **voice AI**, or a **production Next.js / Node** stack built by someone who ships **real systems** — not slide decks — email me: **tanishk16012004@gmail.com**.
+
+I am **available for global clients**: US and UK startups, founders who need **Claude**, **Twilio**, **Deepgram**, and **ElevenLabs** integrated with **TypeScript** discipline end-to-end. When people search **best freelancer India**, **agentic AI developer India**, or **voice AI developer India**, this is the standard I hold the work to.
+
+— **Tanishk Khare**, full-stack engineer, xTanBot.ai, Super 30 3.0 (2026)

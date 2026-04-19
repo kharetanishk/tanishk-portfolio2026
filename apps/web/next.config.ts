@@ -1,6 +1,8 @@
+import createMDX from "@next/mdx";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
   experimental: {
     mdxRs: true,
   },
@@ -46,14 +48,10 @@ const nextConfig: NextConfig = {
         destination: "/#contact",
         permanent: false,
       },
-    ];
-  },
-
-  async rewrites() {
-    return [
       {
-        source: "/sitemap.xml",
-        destination: "/api/sitemap",
+        source: "/hire",
+        destination: "/#contact",
+        permanent: false,
       },
     ];
   },
@@ -72,11 +70,15 @@ const nextConfig: NextConfig = {
   },
 
   env: {
-    NEXT_PUBLIC_SITE_URL: process.env["NEXT_PUBLIC_SITE_URL"] ?? "https://tanishkkhare.dev",
-    NEXT_PUBLIC_API_URL: process.env["NEXT_PUBLIC_API_URL"] ?? "http://localhost:4000",
+    NEXT_PUBLIC_SITE_URL:
+      process.env["NEXT_PUBLIC_SITE_URL"] ?? "https://tanishk-khare.me",
+    NEXT_PUBLIC_API_URL:
+      process.env["NEXT_PUBLIC_API_URL"] ?? "http://localhost:4000",
   },
 
   transpilePackages: ["@repo/content", "@repo/config"],
 };
 
-export default nextConfig;
+const withMDX = createMDX({});
+
+export default withMDX(nextConfig);

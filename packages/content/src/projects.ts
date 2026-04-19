@@ -26,14 +26,18 @@ export interface Project {
   content: string;
 }
 
-const WORK_DIR = path.join(process.cwd(), "packages", "content", "work");
-
-function resolveContentDir(base: string): string {
-  if (fs.existsSync(base)) return base;
-  const alt = path.join(__dirname, "..", "work");
-  if (fs.existsSync(alt)) return alt;
-  const root = path.resolve(__dirname, "../../..");
-  return path.join(root, "packages", "content", "work");
+/** Resolved relative to monorepo root: `packages/content/work/` */
+function resolveWorkDir(): string {
+  const candidates = [
+    path.join(process.cwd(), "packages", "content", "work"),
+    path.join(process.cwd(), "..", "..", "packages", "content", "work"),
+    path.join(__dirname, "..", "work"),
+    path.resolve(__dirname, "..", "..", "..", "packages", "content", "work"),
+  ];
+  for (const dir of candidates) {
+    if (fs.existsSync(dir)) return dir;
+  }
+  return path.join(process.cwd(), "packages", "content", "work");
 }
 
 function parseProjectFile(filePath: string, slug: string): Project {
@@ -62,7 +66,7 @@ function parseProjectFile(filePath: string, slug: string): Project {
 }
 
 export function getAllProjects(): Project[] {
-  const dir = resolveContentDir(WORK_DIR);
+  const dir = resolveWorkDir();
   if (!fs.existsSync(dir)) return [];
 
   const files = fs
@@ -80,7 +84,7 @@ export function getAllProjects(): Project[] {
 }
 
 export function getProjectBySlug(slug: string): Project | null {
-  const dir = resolveContentDir(WORK_DIR);
+  const dir = resolveWorkDir();
   const mdxPath = path.join(dir, `${slug}.mdx`);
   const mdPath = path.join(dir, `${slug}.md`);
 
